@@ -15,6 +15,6 @@
 
 `qa-browser/` 使用锁定版本的 Playwright，在 Chromium、WebKit 及移动视口仿真中验证流程、布局与资源。详见其 README。移动视口仿真不等于真机测试。
 
-GitHub Actions 只在本仓库的 `main` 分支发布：先构建并通过浏览器回归，再将 `dist/` 部署到 GitHub Pages，最后核对线上提交标识与文件 SHA-256，并执行线上浏览器冒烟测试。工作流采用标准 Ubuntu runner；仅部署任务拥有 Pages 写权限。
+GitHub Actions 只在本仓库的 `main` 分支发布：先构建并通过内容与完整资源检查，再将 `dist/` 部署到 GitHub Pages，最后核对线上提交标识与全部 20 个网站文件的 SHA-256。当前版本先发布供人工验收；浏览器自动化保留为独立手动工作流，不阻塞发布，也不代表已通过。工作流采用标准 Ubuntu runner；仅部署任务拥有 Pages 写权限。
 
 源码、测试与发布资源在本仓库公开；原始工作文档与内部记录不在此仓库。

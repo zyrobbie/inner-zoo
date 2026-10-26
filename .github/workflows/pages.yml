@@ -1,4 +1,4 @@
-name: Browser acceptance and GitHub Pages
+name: Publish GitHub Pages for manual acceptance
 
 on:
   push:
@@ -13,14 +13,13 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  browser:
+  build:
     if: >-
       ${{ github.repository == 'zyrobbie/inner-zoo' &&
           !github.event.repository.private && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 5
     env:
-      CI: 'true'
       ZOO_PROJECT_ROOT: ${{ github.workspace }}
     steps:
       - name: Read exact source commit
@@ -32,42 +31,17 @@ jobs:
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: '22'
-      - name: Install pinned browser test dependencies
-        working-directory: qa-browser
-        run: npm ci --ignore-scripts --no-fund --no-audit
-      - name: Build website from source
+      - name: Build complete website from source
         run: npm run build
-      - name: Verify scripts, content contract, assets and test inventory
-        working-directory: qa-browser
-        run: |
-          npm run check:draft
-          npm run preflight
-          node -p 'JSON.stringify({node:process.version,platform:process.platform,arch:process.arch,playwright:require("@playwright/test/package.json").version})' > artifacts/runner-runtime.json
-      - name: Install Chromium and WebKit
-        working-directory: qa-browser
-        run: npx --no-install playwright install --with-deps chromium webkit
-      - name: Discover browser acceptance tests
-        working-directory: qa-browser
-        run: npm run test:list
-      - name: Run candidate browser acceptance
-        working-directory: qa-browser
-        run: npm test
-      - name: Keep synthetic browser evidence
-        if: ${{ always() }}
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: browser-evidence-${{ github.sha }}-${{ github.run_attempt }}
-          path: qa-browser/artifacts/
-          if-no-files-found: warn
-          retention-days: 7
-          include-hidden-files: false
-      - name: Upload only the successfully tested website
+      - name: Verify frozen content and all 20 website files
+        run: node qa-browser/scripts/preflight.cjs
+      - name: Upload structurally checked website
         uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
         with:
           path: dist
 
   deploy:
-    needs: browser
+    needs: build
     permissions:
       pages: write
       id-token: write
@@ -79,20 +53,16 @@ jobs:
     steps:
       - name: Configure GitHub Pages
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
-      - name: Deploy tested website
+      - name: Deploy for user acceptance
         id: deployment
         uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
 
-  live:
+  verify:
     needs: deploy
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
-    env:
-      CI: 'true'
-      ZOO_PROJECT_ROOT: ${{ github.workspace }}
-      ZOO_EXPECTED_COMMIT: ${{ github.sha }}
+    timeout-minutes: 7
     steps:
-      - name: Read the deployed source commit
+      - name: Read deployed source commit
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           persist-credentials: false
@@ -101,25 +71,15 @@ jobs:
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: '22'
-      - name: Install pinned browser test dependencies
-        working-directory: qa-browser
-        run: npm ci --ignore-scripts --no-fund --no-audit
-      - name: Rebuild reference bytes for exact deployed commit
+      - name: Rebuild reference bytes
         run: npm run build
-      - name: Verify HTTPS live commit and all website file hashes
+      - name: Verify HTTPS status, release commit and all website file hashes
         run: npm run verify:live
-      - name: Install Chromium and WebKit
-        working-directory: qa-browser
-        run: npx --no-install playwright install --with-deps chromium webkit
-      - name: Run real Pages browser smoke
-        working-directory: qa-browser
-        run: npm run test:live
-      - name: Keep live verification evidence
+      - name: Preserve exact live integrity evidence
         if: ${{ always() }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: live-evidence-${{ github.sha }}-${{ github.run_attempt }}
-          path: qa-browser/artifacts/
+          name: live-integrity-${{ github.sha }}-${{ github.run_attempt }}
+          path: qa-browser/artifacts/live-integrity.json
           if-no-files-found: warn
           retention-days: 7
-          include-hidden-files: false
