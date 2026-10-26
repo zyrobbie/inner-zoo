@@ -1,0 +1,7 @@
+{
+  "source": "phase1 immutable original dist/index.html",
+  "sha256": "5865f5f1094b07a8857b3a2ded3acbb8b8b2dcf758d8bc00c0aabd4bcfbc9604",
+  "scope": "Single original standalone HTML only, with original inline SVG. No original assets, screenshots or docs copied.",
+  "status": "NOT browser-tested by draft preparation",
+  "fontIsolation": "Server sends a restrictive CSP for this baseline fixture only, preserving original HTML bytes and blocking legacy Google Fonts. Browser request routing also aborts external font URLs. Expected CSP/font failures are explicitly logged, not treated as phase-three app health."
+}

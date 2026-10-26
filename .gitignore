@@ -1,0 +1,8 @@
+node_modules/
+dist/
+qa-browser/artifacts/
+qa-browser/DRAFT_STATUS.json
+.DS_Store
+*.log
+.env
+.env.*

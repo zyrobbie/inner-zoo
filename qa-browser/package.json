@@ -1,0 +1,19 @@
+{
+  "name": "inner-zoo-browser-qa",
+  "private": true,
+  "version": "0.0.0-draft",
+  "engines": {
+    "node": ">=22 <23"
+  },
+  "scripts": {
+    "check:draft": "node scripts/self-check.cjs",
+    "preflight": "node scripts/preflight.cjs",
+    "test": "playwright test",
+    "test:list": "playwright test --list",
+    "test:live": "playwright test --config=playwright.live.config.cjs",
+    "test:live:list": "playwright test --config=playwright.live.config.cjs --list"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.0"
+  }
+}

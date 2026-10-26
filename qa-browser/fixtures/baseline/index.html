@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>内在动物园·选择题版</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF0EA; --surface:#FFFFFF; --surface-2:#F6F5EF;
+  --ink:#24291F; --ink-soft:#5C6154; --ink-faint:#8B9080;
+  --accent:#6F4E63; --accent-soft:#E4D8E0;
+  --line:#DADDD2; --track:#E2E4DA;
+  --shadow: 0 1px 2px rgba(36,41,31,.06), 0 6px 20px rgba(36,41,31,.06);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#1B1D18; --surface:#23261F; --surface-2:#2A2D24;
+    --ink:#EDEFE7; --ink-soft:#AEB39F; --ink-faint:#767C6B;
+    --accent:#D2A9C4; --accent-soft:#3A2E36;
+    --line:#33362B; --track:#2E3127;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#1B1D18; --surface:#23261F; --surface-2:#2A2D24;
+  --ink:#EDEFE7; --ink-soft:#AEB39F; --ink-faint:#767C6B;
+  --accent:#D2A9C4; --accent-soft:#3A2E36;
+  --line:#33362B; --track:#2E3127;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg); color:var(--ink); font-family:'Manrope',-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;}
+.display{font-family:'Fraunces','Noto Serif SC',serif;}
+.wrap{max-width:560px; margin:0 auto; padding:20px 20px 40px;}
+.top{display:flex; align-items:center; gap:12px; padding-top:6px; margin-bottom:18px;}
+.brand{font-size:13px; color:var(--ink-faint); letter-spacing:.04em;}
+.progress-track{flex:1; height:6px; border-radius:99px; background:var(--track); overflow:hidden;}
+.progress-fill{height:100%; background:var(--accent); border-radius:99px; transition:width .35s ease;}
+.progress-num{font-size:12px; color:var(--ink-faint); font-variant-numeric:tabular-nums; min-width:40px; text-align:right;}
+
+.card{background:var(--surface); border:1px solid var(--line); border-radius:20px; box-shadow:var(--shadow); padding:26px 22px;}
+
+.hero{text-align:center; padding:10px 4px 6px;}
+.hero-icon{width:88px; height:88px; margin:0 auto 18px;}
+h1.title{font-size:26px; line-height:1.3; margin:0 0 10px; text-wrap:balance;}
+.sub{font-size:15px; color:var(--ink-soft); line-height:1.7; margin:0 0 22px;}
+.pill{display:inline-block; font-size:12px; color:var(--accent); background:var(--accent-soft); border-radius:99px; padding:4px 12px; margin-bottom:14px; letter-spacing:.02em;}
+
+.btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:15px 20px; border-radius:14px; border:none; background:var(--accent); color:var(--surface); font-size:16px; font-weight:600; cursor:pointer; font-family:inherit; transition:opacity .15s ease, transform .1s ease;}
+.btn:active{transform:scale(.98);}
+.btn:disabled{opacity:.4; cursor:not-allowed;}
+.btn-ghost{background:transparent; border:1px solid var(--line); color:var(--ink);}
+
+.note{font-size:12.5px; color:var(--ink-faint); line-height:1.7; margin-top:18px; padding-top:16px; border-top:1px solid var(--line);}
+
+.scene-eyebrow{font-size:12px; color:var(--ink-faint); letter-spacing:.06em; margin-bottom:10px;}
+.scene{font-family:'Fraunces','Noto Serif SC',serif; font-size:20px; line-height:1.6; margin:0 0 22px; text-wrap:balance;}
+.opt{display:block; width:100%; text-align:left; padding:15px 16px; margin-bottom:10px; border-radius:14px; border:1.5px solid var(--line); background:var(--surface-2); color:var(--ink); font-size:15px; line-height:1.55; cursor:pointer; font-family:inherit; transition:border-color .12s ease, background .12s ease;}
+.opt:last-child{margin-bottom:0}
+.opt:active{background:var(--accent-soft);}
+.opt:hover{border-color:var(--accent);}
+
+.likert-item{margin-bottom:0;}
+.likert-text{font-family:'Fraunces','Noto Serif SC',serif; font-size:19px; line-height:1.6; margin:0 0 22px; text-wrap:balance;}
+.likert-scale{display:flex; gap:8px;}
+.likert-btn{flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 4px; border-radius:12px; border:1.5px solid var(--line); background:var(--surface-2); cursor:pointer; font-family:inherit;}
+.likert-dot{width:16px; height:16px; border-radius:50%; border:1.5px solid var(--ink-faint); background:transparent;}
+.likert-btn.sel .likert-dot{background:var(--accent); border-color:var(--accent);}
+.likert-btn.sel{border-color:var(--accent); background:var(--accent-soft);}
+.likert-label{font-size:10.5px; color:var(--ink-faint); text-align:center; line-height:1.3;}
+.likert-ends{display:flex; justify-content:space-between; font-size:11.5px; color:var(--ink-faint); margin-top:8px;}
+
+.nav-row{display:flex; gap:10px; margin-top:20px;}
+.nav-row .btn{width:auto; flex:1;}
+
+.result-hero{text-align:center; padding:26px 6px 20px;}
+.self-ring{width:150px; height:150px; margin:0 auto 14px; position:relative;}
+.self-pct{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;}
+.self-pct .num{font-family:'Fraunces','Noto Serif SC',serif; font-size:34px; font-variant-numeric:tabular-nums;}
+.self-pct .lbl{font-size:11.5px; color:var(--ink-faint); margin-top:2px;}
+.self-desc{font-size:14px; color:var(--ink-soft); line-height:1.7; max-width:420px; margin:0 auto;}
+
+.tier-card{display:flex; align-items:center; gap:14px; padding:18px 20px;}
+.tier-icon{width:40px; height:40px; flex:none;}
+.tier-name{font-family:'Fraunces','Noto Serif SC',serif; font-size:18px; margin:0 0 3px;}
+.tier-desc{font-size:13px; color:var(--ink-soft); line-height:1.55; margin:0;}
+
+.section-label{font-size:13px; color:var(--ink-faint); letter-spacing:.04em; margin:28px 0 12px;}
+
+.protector-card{display:flex; gap:14px; padding:18px 20px; margin-bottom:12px;}
+.protector-icon{width:56px; height:56px; flex:none;}
+.protector-name{font-family:'Fraunces','Noto Serif SC',serif; font-size:17px; margin:0 0 2px;}
+.protector-pct{font-size:12.5px; font-variant-numeric:tabular-nums; margin:0 0 6px;}
+.protector-quote{font-size:13px; font-style:italic; color:var(--ink-soft); margin:0 0 6px;}
+.protector-desc{font-size:13px; color:var(--ink-soft); line-height:1.6; margin:0;}
+
+.bar-row{display:flex; align-items:center; gap:10px; margin-bottom:12px;}
+.bar-icon{width:26px; height:26px; flex:none;}
+.bar-name{font-size:13px; width:76px; flex:none;}
+.bar-track{flex:1; height:9px; border-radius:99px; background:var(--track); overflow:hidden;}
+.bar-fill{height:100%; border-radius:99px;}
+.bar-pct{width:38px; text-align:right; font-size:12px; color:var(--ink-faint); font-variant-numeric:tabular-nums; flex:none;}
+
+.toggle-link{background:none; border:none; color:var(--accent); font-size:14px; font-family:inherit; cursor:pointer; padding:4px 0; display:flex; align-items:center; gap:4px;}
+
+.main-card{text-align:center; padding:30px 22px 26px; margin-top:10px;}
+.main-icon{width:104px; height:104px; margin:0 auto 12px;}
+.main-label{font-size:12.5px; color:var(--ink-faint); letter-spacing:.06em; margin:0 0 6px;}
+.main-name{font-family:'Fraunces','Noto Serif SC',serif; font-size:24px; margin:0 0 6px;}
+.main-card .protector-quote{font-size:14px; margin:0 0 12px;}
+.main-desc{font-size:14.5px; color:var(--ink-soft); line-height:1.75; margin:0; text-align:left;}
+
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top" id="topBar" hidden>
+    <span class="brand">内在动物园</span>
+    <div class="progress-track"><div class="progress-fill" id="progFill" style="width:0%"></div></div>
+    <span class="progress-num" id="progNum">1/20</span>
+  </div>
+  <div id="app"></div>
+</div>
+
+<script>
+const CATS = {"anger":{"name":"愤怒","mascot":"圆鼓鼓的小刺豚","color":"#C1502F","quote":"别看我圆滚滚的，惹急了我可是会炸毛的！","desc":"它用愤怒在你和可能的伤害之间竖起一道墙——一旦感觉不被尊重、或者被冒犯，就会立刻炸毛，用攻击性把对方顶回去。"},"perfect":{"name":"完美主义","mascot":"猫头鹰警官","color":"#5E5490","quote":"这里，还有一个地方能再检查一遍。","desc":"它靠不断提高标准、反复检查来行动，只要事情还没做到无可挑剔，就很难松懈下来，以此避免被别人指出问题。"},"anxvig":{"name":"焦虑·警惕","mascot":"竖起耳朵的小狸花","color":"#B4762A","quote":"我再张望一圈……确认真的安全了，才能安心。","desc":"它一刻不停地留意可能出事的信号：有时是反复预演各种“万一”，有时是习惯性地观察周围、很难完全信任别人——只是站岗站久了，真的很累。"},"please":{"name":"讨好","mascot":"营业式微笑的柯基","color":"#C97A5C","quote":"没关系没关系，你先说，你先说！","desc":"它靠照顾别人的情绪、让所有人都满意来行动，用付出和迁就换取被喜欢、不被排斥的安全感。"},"avoid":{"name":"回避","mascot":"淡定的卡皮巴拉","color":"#4F7A5C","quote":"（专心晒太阳，没在听）","desc":"它用不投入、不抱太多期待的方式，提前避开可能出现的失望和受伤——保持一点距离，就不容易被伤到。"},"numb":{"name":"麻痹","mascot":"跑来跑去囤货的小仓鼠","color":"#8A6B4A","quote":"先囤点什么在手边，心里就踏实一点。","desc":"它是典型的“消防员”：情绪一上来，就用刷手机、囤东西、找点事做这些立竿见影的方式把难受盖过去——手里囤的越多，心里的事就越不用去想。"},"self":{"name":"自我","mascot":"真我","color":"#D1A62E","quote":"","desc":"在IFS理论里，“自我”不是某个部分，而是本来就有、一直都在的稳定核心——不需要攻击、讨好、回避或麻痹，也能安然应对当下。"}};
+const QUESTIONS = [{"scene":"项目汇报时，领导当众指出一个明显的错误。","opts":[["心里不服，觉得被针对","anger"],["回去把材料又查了一遍","perfect"],["一直想会不会影响印象","anxvig"],["有点不好意思，改完就翻篇","self"]]},{"scene":"熬夜赶完的方案，被同事随口说了句“感觉一般”。","opts":[["心里不爽，觉得对方不懂你的付出","anger"],["当场决定推翻重做","perfect"],["笑着说没事，心里却挺受伤","please"],["有点不是滋味，问了句哪里能改","self"]]},{"scene":"精心准备的计划，临时被打乱、全部推翻重来。","opts":[["很烦躁，忍不住抱怨","anger"],["立刻重做一份绝不出错的计划","perfect"],["先放一放，这两天不想碰","avoid"],["愣了两秒，开始想接下来怎么办","self"]]},{"scene":"发现上周交出去的文件里有一个错别字。","opts":[["生自己的气，觉得不应该","anger"],["从此交东西前都反复检查","perfect"],["先刷会儿手机，晚点再想","numb"],["笑一下，改过来接着做","self"]]},{"scene":"朋友临时放了你鸽子，事后连解释都没有。","opts":[["憋着火，想发消息说清楚","anger"],["担心是不是自己得罪了对方","anxvig"],["想“他肯定有难处”，主动缓和","please"],["有点小失落，但很快就不想了","self"]]},{"scene":"伴侣这几天情绪不好，对你说话变冷淡。","opts":[["莫名其妙，语气也冲了起来","anger"],["不停琢磨关系是不是出问题了","anxvig"],["不问不提，各自安静几天","avoid"],["问了一句“是不是有心事”","self"]]},{"scene":"群聊里说错一句话，气氛突然冷场。","opts":[["有点恼火，觉得大家反应过度","anger"],["不停猜大家是不是在议论你","anxvig"],["赶紧刷点视频，别再想了","numb"],["愣了一下，没太放在心上","self"]]},{"scene":"答应了朋友的请求，但那几天自己也很忙。","opts":[["硬撑着做完，事后越想越气","anger"],["不好意思拒绝，咬牙做了","please"],["含糊拖着，希望对方去问别人","avoid"],["说了自己这几天也挺忙","self"]]},{"scene":"家庭聚餐，亲戚又开始追问婚恋、收入。","opts":[["直接怼回去，让对方别问了","anger"],["陪着笑一一回答，不想扫兴","please"],["低头刷手机，岔开话题不接","numb"],["回应两句，顺势聊别的了","self"]]},{"scene":"争执中说了一句让对方很受伤的话。","opts":[["嘴上说“是你先这样的”","anger"],["不知道怎么道歉，先冷处理","avoid"],["心里难受，靠刷手机熬过去","numb"],["缓过来后，说了句“对不起”","self"]]},{"scene":"明天要交重要方案，反复改到很晚。","opts":[["总觉得还能打磨，迟迟不定稿","perfect"],["一直想“万一不够好怎么办”","anxvig"],["问了好几个人的意见，怕不合心意","please"],["改到自己觉得差不多，就交了","self"]]},{"scene":"计划已久的一件事，因为自己疏忽搞砸了。","opts":[["制定一套“绝不能再错”的计划","perfect"],["从此凡事都要反复确认","anxvig"],["不想提起，也不太想复盘","avoid"],["有点懊恼，想着下次留意","self"]]},{"scene":"精心准备的演讲，中途卡壳忘词了几秒。","opts":[["结束后反复回看，标出每个点","perfect"],["接下来一直紧张，怕再出错","anxvig"],["下台先点杯奶茶压压惊","numb"],["笑一下接着讲，没太在意","self"]]},{"scene":"团队分工时，没人认领最麻烦的工作。","opts":[["既然接了，就必须做到最好","perfect"],["主动揽了下来，哪怕不情愿","please"],["安静等着，看别人先开口","avoid"],["说了句“我先来吧”，就去做了","self"]]},{"scene":"家人对你最近的重要决定不太赞同。","opts":[["想做出更好的结果证明自己没错","perfect"],["努力解释，很想得到认可","please"],["不想争，转头点外卖刷手机","numb"],["听他们说完，讲了自己的想法","self"]]},{"scene":"报的新技能课，第一节课比想象中难。","opts":[["熬夜把落下的内容补齐","perfect"],["找理由先请假，“有空再继续”","avoid"],["先打两局游戏，缓一缓","numb"],["慢慢学，没太当回事","self"]]},{"scene":"朋友邀你参加一个都是陌生人的聚会。","opts":[["光想象到场的画面就紧张","anxvig"],["去了，全程照顾大家感受","please"],["找理由婉拒，不去更轻松","avoid"],["有点紧张，但还是去了","self"]]},{"scene":"给客户发的消息，过了一天还没回。","opts":[["开始想各种“是不是出问题了”","anxvig"],["又追加了一条更客气的消息","please"],["隔几分钟看一眼手机，顺手刷起来","numb"],["猜对方可能在忙，先做别的","self"]]},{"scene":"和好朋友闹了别扭，谁都没先开口。","opts":[["每天都想这事，越想越不安","anxvig"],["避免单独相处，等它淡下去","avoid"],["一想起就点开手机，不去琢磨","numb"],["找了个时机，主动说了句话","self"]]},{"scene":"周末被临时喊去帮忙，本想好好休息。","opts":[["嘴上答应，不好意思说不","please"],["假装没看到消息，晚点再回","avoid"],["去是去了，晚上得吃顿好的","numb"],["看看自己的状态，再回话","self"]]}];
+const ANIMAL_ORDER = ["anger","perfect","anxvig","please","avoid","numb"];
+const MASCOTS = {"anger":"<svg viewBox=\"0 0 100 100\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n    <g stroke=\"#a33211\" stroke-width=\"3\" stroke-linecap=\"round\">\n      <line x1=\"20\" y1=\"15\" x2=\"30\" y2=\"26\"/><line x1=\"35\" y1=\"8\" x2=\"40\" y2=\"22\"/>\n      <line x1=\"80\" y1=\"15\" x2=\"70\" y2=\"26\"/><line x1=\"65\" y1=\"8\" x2=\"60\" y2=\"22\"/>\n      <line x1=\"8\" y1=\"45\" x2=\"22\" y2=\"45\"/><line x1=\"92\" y1=\"45\" x2=\"78\" y2=\"45\"/>\n      <line x1=\"14\" y1=\"65\" x2=\"26\" y2=\"60\"/><line x1=\"86\" y1=\"65\" x2=\"74\" y2=\"60\"/>\n    </g>\n    <circle cx=\"50\" cy=\"52\" r=\"30\" fill=\"#C1502F\"/>\n    <path d=\"M25 40 Q50 20 75 40\" stroke=\"#ad3c1b\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/>\n    <circle cx=\"39\" cy=\"50\" r=\"4.5\" fill=\"#851400\"/>\n    <circle cx=\"61\" cy=\"50\" r=\"4.5\" fill=\"#851400\"/>\n    <path d=\"M40 65 Q50 60 60 65\" stroke=\"#851400\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/>\n  </svg>","perfect":"<svg viewBox=\"0 0 100 100\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n    <path d=\"M30 25 L20 8 L38 18 Z\" fill=\"#5E5490\"/>\n    <path d=\"M70 25 L80 8 L62 18 Z\" fill=\"#5E5490\"/>\n    <ellipse cx=\"50\" cy=\"55\" rx=\"32\" ry=\"30\" fill=\"#5E5490\"/>\n    <circle cx=\"37\" cy=\"52\" r=\"14\" fill=\"#FBFAF6\"/>\n    <circle cx=\"63\" cy=\"52\" r=\"14\" fill=\"#FBFAF6\"/>\n    <circle cx=\"37\" cy=\"52\" r=\"6.5\" fill=\"#362c68\"/>\n    <circle cx=\"63\" cy=\"52\" r=\"6.5\" fill=\"#362c68\"/>\n    <path d=\"M46 62 L50 68 L54 62 Z\" fill=\"#4a407c\"/>\n    <path d=\"M15 60 Q5 55 12 42\" stroke=\"#5E5490\" stroke-width=\"7\" fill=\"none\" stroke-linecap=\"round\"/>\n    <path d=\"M85 60 Q95 55 88 42\" stroke=\"#5E5490\" stroke-width=\"7\" fill=\"none\" stroke-linecap=\"round\"/>\n  </svg>","anxvig":"<svg viewBox=\"0 0 100 100\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n    <path d=\"M25 30 L14 6 L38 22 Z\" fill=\"#B4762A\"/>\n    <path d=\"M75 30 L86 6 L62 22 Z\" fill=\"#B4762A\"/>\n    <path d=\"M25 30 L20 12 L34 23 Z\" fill=\"#dc9e52\"/>\n    <path d=\"M75 30 L80 12 L66 23 Z\" fill=\"#dc9e52\"/>\n    <circle cx=\"50\" cy=\"56\" r=\"29\" fill=\"#B4762A\"/>\n    <path d=\"M30 44 Q38 40 46 44\" stroke=\"#9b5d11\" stroke-width=\"2.5\" fill=\"none\" stroke-linecap=\"round\"/>\n    <path d=\"M54 44 Q62 40 70 44\" stroke=\"#9b5d11\" stroke-width=\"2.5\" fill=\"none\" stroke-linecap=\"round\"/>\n    <circle cx=\"40\" cy=\"55\" r=\"7\" fill=\"#FBFAF6\"/>\n    <circle cx=\"60\" cy=\"55\" r=\"7\" fill=\"#FBFAF6\"/>\n    <circle cx=\"40\" cy=\"55\" r=\"3.2\" fill=\"#20221B\"/>\n    <circle cx=\"60\" cy=\"55\" r=\"3.2\" fill=\"#20221B\"/>\n    <path d=\"M47 66 L50 69 L53 66\" stroke=\"#96580c\" stroke-width=\"2\" fill=\"none\" stroke-linecap=\"round\"/>\n    <g stroke=\"#a5671b\" stroke-width=\"1.6\" stroke-linecap=\"round\">\n      <line x1=\"16\" y1=\"58\" x2=\"32\" y2=\"60\"/><line x1=\"16\" y1=\"65\" x2=\"32\" y2=\"64\"/>\n      <line x1=\"84\" y1=\"58\" x2=\"68\" y2=\"60\"/><line x1=\"84\" y1=\"65\" x2=\"68\" y2=\"64\"/>\n    </g>\n  </svg>","please":"<svg viewBox=\"0 0 100 100\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n    <ellipse cx=\"26\" cy=\"26\" rx=\"11\" ry=\"16\" fill=\"#C97A5C\" transform=\"rotate(-15 26 26)\"/>\n    <ellipse cx=\"74\" cy=\"26\" rx=\"11\" ry=\"16\" fill=\"#C97A5C\" transform=\"rotate(15 74 26)\"/>\n    <ellipse cx=\"50\" cy=\"58\" rx=\"33\" ry=\"29\" fill=\"#C97A5C\"/>\n    <path d=\"M36 52 Q40 47 44 52\" stroke=\"#9c4d2f\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/>\n    <path d=\"M56 52 Q60 47 64 52\" stroke=\"#9c4d2f\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/>\n    <ellipse cx=\"50\" cy=\"66\" rx=\"7\" ry=\"5\" fill=\"#d38466\" stroke=\"#9c4d2f\" stroke-width=\"2\"/>\n    <path d=\"M50 71 Q50 78 44 80\" stroke=\"#E0637A\" stroke-width=\"5\" fill=\"none\" stroke-linecap=\"round\"/>\n  </svg>","avoid":"<svg viewBox=\"0 0 100 100\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n    <ellipse cx=\"50\" cy=\"60\" rx=\"38\" ry=\"27\" fill=\"#4F7A5C\"/>\n    <ellipse cx=\"22\" cy=\"46\" rx=\"7\" ry=\"8\" fill=\"#4F7A5C\"/>\n    <ellipse cx=\"78\" cy=\"46\" rx=\"7\" ry=\"8\" fill=\"#4F7A5C\"/>\n    <ellipse cx=\"50\" cy=\"66\" rx=\"20\" ry=\"10\" fill=\"#689375\"/>\n    <path d=\"M36 52 L44 52\" stroke=\"#275234\" stroke-width=\"3\" stroke-linecap=\"round\"/>\n    <path d=\"M56 52 L64 52\" stroke=\"#275234\" stroke-width=\"3\" stroke-linecap=\"round\"/>\n    <ellipse cx=\"42\" cy=\"66\" rx=\"3\" ry=\"2.4\" fill=\"#1d482a\"/>\n    <ellipse cx=\"58\" cy=\"66\" rx=\"3\" ry=\"2.4\" fill=\"#1d482a\"/>\n  </svg>","numb":"<svg viewBox=\"0 0 100 100\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n    <ellipse cx=\"24\" cy=\"30\" rx=\"9\" ry=\"10\" fill=\"#8A6B4A\"/>\n    <ellipse cx=\"76\" cy=\"30\" rx=\"9\" ry=\"10\" fill=\"#8A6B4A\"/>\n    <circle cx=\"50\" cy=\"58\" r=\"32\" fill=\"#8A6B4A\"/>\n    <ellipse cx=\"27\" cy=\"64\" rx=\"12\" ry=\"10\" fill=\"#a08160\"/>\n    <ellipse cx=\"73\" cy=\"64\" rx=\"12\" ry=\"10\" fill=\"#a08160\"/>\n    <circle cx=\"40\" cy=\"50\" r=\"3.4\" fill=\"#533413\"/>\n    <circle cx=\"60\" cy=\"50\" r=\"3.4\" fill=\"#533413\"/>\n    <ellipse cx=\"50\" cy=\"58\" rx=\"3.5\" ry=\"2.6\" fill=\"#5d3e1d\"/>\n  </svg>","self":"<svg viewBox=\"0 0 100 100\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n    <g stroke=\"#D1A62E\" stroke-width=\"4\" stroke-linecap=\"round\">\n      <line x1=\"50\" y1=\"6\" x2=\"50\" y2=\"18\"/>\n      <line x1=\"50\" y1=\"82\" x2=\"50\" y2=\"94\"/>\n      <line x1=\"6\" y1=\"50\" x2=\"18\" y2=\"50\"/>\n      <line x1=\"82\" y1=\"50\" x2=\"94\" y2=\"50\"/>\n      <line x1=\"18\" y1=\"18\" x2=\"26\" y2=\"26\"/>\n      <line x1=\"74\" y1=\"74\" x2=\"82\" y2=\"82\"/>\n      <line x1=\"82\" y1=\"18\" x2=\"74\" y2=\"26\"/>\n      <line x1=\"26\" y1=\"74\" x2=\"18\" y2=\"82\"/>\n    </g>\n    <circle cx=\"50\" cy=\"50\" r=\"22\" fill=\"#D1A62E\"/>\n    <circle cx=\"50\" cy=\"50\" r=\"22\" fill=\"none\" stroke=\"#f4c951\" stroke-width=\"2\"/>\n  </svg>"};
+const DISCLAIMER = "本测试受IFS（内在家庭系统）理论启发原创设计，呈现的是你近期较活跃的几种“内在保护者”，不代表你的全部，也不是心理测评工具，结果不构成任何诊断依据，也和《57题IFS Scale》等专业量表的正式结果无关。想更深入了解自己，欢迎寻找专业咨询师聊聊～";
+
+const state = { idx: 0, answers: new Array(QUESTIONS.length).fill(null), order: [] };
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=a[i]; a[i]=a[j]; a[j]=t; }
+  return a;
+}
+
+const app = document.getElementById("app");
+const topBar = document.getElementById("topBar");
+const progFill = document.getElementById("progFill");
+const progNum = document.getElementById("progNum");
+
+function renderIntro(){
+  topBar.hidden = true;
+  app.innerHTML =
+    '<div class="card hero">' +
+      '<div class="hero-icon">' + MASCOTS.self + '</div>' +
+      '<span class="pill">选择题版 · 方案一</span>' +
+      '<h1 class="title display">你内在的动物园</h1>' +
+      '<p class="sub">20个日常小场景，看看最近是哪几位“内在保护者”比较忙。每题选一个最像你当下反应的选项，凭第一感觉作答就好。</p>' +
+      '<button class="btn" id="startBtn">开始测试</button>' +
+      '<p class="note">' + DISCLAIMER + '</p>' +
+    '</div>';
+  document.getElementById("startBtn").onclick = () => { state.idx = 0; renderQuestion(); };
+}
+
+function renderQuestion(){
+  topBar.hidden = false;
+  const q = QUESTIONS[state.idx];
+  if(!state.order[state.idx]) state.order[state.idx] = shuffle(q.opts.map((o,i)=>i));
+  const order = state.order[state.idx];
+  progFill.style.width = ((state.idx) / QUESTIONS.length * 100) + "%";
+  progNum.textContent = (state.idx+1) + "/" + QUESTIONS.length;
+
+  const letters = ["A","B","C","D"];
+  let optsHtml = "";
+  order.forEach((origIdx, i) => {
+    const [text, key] = q.opts[origIdx];
+    const sel = state.answers[state.idx] === key ? " sel" : "";
+    optsHtml += '<button class="opt' + sel + '" data-key="' + key + '">' + text + '</button>';
+  });
+
+  app.innerHTML =
+    '<div class="card">' +
+      '<div class="scene-eyebrow">情景 ' + (state.idx+1) + ' / ' + QUESTIONS.length + '</div>' +
+      '<p class="scene display">' + q.scene + '</p>' +
+      optsHtml +
+      '<div class="nav-row">' +
+        (state.idx>0 ? '<button class="btn btn-ghost" id="backBtn">上一题</button>' : '') +
+      '</div>' +
+    '</div>';
+
+  app.querySelectorAll(".opt").forEach(btn => {
+    btn.onclick = () => {
+      state.answers[state.idx] = btn.getAttribute("data-key");
+      if(state.idx < QUESTIONS.length - 1){ state.idx++; renderQuestion(); }
+      else { renderResults(); }
+    };
+  });
+  const back = document.getElementById("backBtn");
+  if(back) back.onclick = () => { state.idx--; renderQuestion(); };
+}
+
+function computeResults(){
+  const counts = {}; ANIMAL_ORDER.concat(["self"]).forEach(k => counts[k]=0);
+  state.answers.forEach(k => { if(k) counts[k]++; });
+  const total = QUESTIONS.length;
+  const selfPct = Math.round(counts.self/total*100);
+  const animals = ANIMAL_ORDER.map((k,i) => ({ key:k, idx:i, count:counts[k], pct: Math.round(counts[k]/total*100) }))
+    .sort((a,b)=> (b.count - a.count) || (a.idx - b.idx));
+  return { selfPct, animals };
+}
+
+function renderResults(){
+  topBar.hidden = true;
+  const { selfPct, animals } = computeResults();
+  const main = animals[0];
+  const mc = CATS[main.key];
+  const tied = animals.slice(1).filter(a => a.count === main.count && a.count > 0).map(a => CATS[a.key].name);
+  const tieNote = tied.length ? '（与「' + tied.join("」「") + '」并列）' : '';
+  const others = animals.slice(1).filter(a => a.count > 0);
+
+  const mainHtml =
+    '<div class="card main-card">' +
+      '<div class="main-icon">' + MASCOTS[main.key] + '</div>' +
+      '<p class="main-label">最近最忙的一位</p>' +
+      '<p class="main-name display">' + mc.mascot + '</p>' +
+      '<p class="protector-pct" style="color:' + mc.color + '">' + mc.name + ' · 出现在 ' + main.pct + '% 的选择里' + tieNote + '</p>' +
+      '<p class="protector-quote">“' + mc.quote + '”</p>' +
+      '<p class="main-desc">' + mc.desc + '</p>' +
+    '</div>';
+
+  let othersHtml = "";
+  if(others.length){
+    othersHtml += '<p class="section-label">其他也在活动的部分</p>';
+    others.forEach(a => {
+      const c = CATS[a.key];
+      othersHtml += '<div class="card protector-card">' +
+        '<div class="protector-icon">' + MASCOTS[a.key] + '</div>' +
+        '<div>' +
+          '<p class="protector-name display">' + c.mascot + '</p>' +
+          '<p class="protector-pct" style="color:' + c.color + '">' + c.name + ' · 出现在 ' + a.pct + '% 的选择里</p>' +
+          '<p class="protector-quote">“' + c.quote + '”</p>' +
+          '<p class="protector-desc">' + c.desc + '</p>' +
+        '</div>' +
+      '</div>';
+    });
+  }
+
+  const selfText = selfPct > 0
+    ? '有 ' + selfPct + '% 的选择，是真我在直接回应当下。' + CATS.self.desc
+    : '这次的选择里，真我没有直接出现。这并不代表它不在，它一直在，只是需要被留意。';
+  const selfHtml =
+    '<p class="section-label">真我</p>' +
+    '<div class="card protector-card">' +
+      '<div class="protector-icon">' + MASCOTS.self + '</div>' +
+      '<div><p class="protector-name display">真我在场 · ' + selfPct + '%</p>' +
+      '<p class="protector-desc">' + selfText + '</p></div>' +
+    '</div>';
+
+  app.innerHTML =
+    mainHtml + othersHtml + selfHtml +
+    '<button class="btn btn-ghost" id="restartBtn" style="margin-top:22px;">重新测一次</button>' +
+    '<p class="note">' + DISCLAIMER + '</p>';
+
+  document.getElementById("restartBtn").onclick = () => {
+    state.idx = 0; state.answers = new Array(QUESTIONS.length).fill(null); state.order = [];
+    renderIntro();
+  };
+}
+
+function start(){ renderIntro(); }
+if (window.claude && window.claude.hot) {
+  window.claude.hot.ready ? window.claude.hot.ready(start) : start();
+} else {
+  start();
+}
+</script>
+</body>
+</html>

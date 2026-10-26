@@ -1,0 +1,11 @@
+{
+  "playwright": "1.64.0",
+  "registry": "https://registry.npmjs.org/",
+  "verification": "npm package-lock-only fetched official registry metadata with SHA512 integrity for @playwright/test, playwright and playwright-core; no packages/browsers installed by draft preparation",
+  "browserManifest": "https://raw.githubusercontent.com/microsoft/playwright/v1.64.0/packages/playwright-core/browsers.json",
+  "release": "https://github.com/microsoft/playwright/releases/tag/v1.64.0",
+  "engines": {
+    "chromium": { "version": "156.0.8078.4", "revision": "1248" },
+    "webkit": { "version": "27.2", "revision": "2370" }
+  }
+}
