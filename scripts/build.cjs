@@ -9,8 +9,8 @@ execFileSync(process.execPath, ['build-mc.js'], { cwd: path.join(root, 'src'), s
 fs.renameSync(path.join(root, 'src/quiz-mc.html'), path.join(dist, 'quiz-mc.html'));
 execFileSync(process.execPath, ['src/build-standalone.js'], { cwd: root, stdio: 'inherit' });
 const hash = file => crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
-const names = ['index.html', 'quiz-mc.html', ...fs.readdirSync(path.join(dist, 'assets/avatars')).sort().map(name => 'assets/avatars/' + name)];
-if (names.length !== 20) throw Error('Expected exactly 2 HTML files and 18 avatar derivatives');
+const names = ['index.html', 'quiz-mc.html', 'assets/cover/intro-v051.webp', 'assets/cover/intro-v051.jpg', ...fs.readdirSync(path.join(dist, 'assets/avatars')).sort().map(name => 'assets/avatars/' + name)];
+if (names.length !== 22) throw Error('Expected exactly 2 HTML files, 2 cover images and 18 avatar derivatives');
 const files = names.map(name => ({ path: name, bytes: fs.statSync(path.join(dist, name)).size, sha256: hash(path.join(dist, name)) }));
 const commit = process.env.GITHUB_SHA || 'local';
 if (commit !== 'local' && !/^[0-9a-f]{40}$/.test(commit)) throw Error('Invalid build commit');

@@ -52,16 +52,16 @@ function renderIntro(){
   document.documentElement.setAttribute("data-quiz-view", "intro");
   topBar.hidden = true;
   app.innerHTML =
-    '<div class="card hero">' +
-      '<div class="hero-icon">' + MASCOTS.self + '</div>' +
-      '<span class="pill">选择题版 · 方案一</span>' +
-      '<h1 class="title display">你内在的动物园</h1>' +
-      '<div class="cover-gallery" aria-hidden="true"><div class="cover-halo"></div>' + ['perfect','anxvig','please','anger','avoid','numb'].map((key,i) => '<div class="cover-portrait cover-position-' + i + '">' + avatarHtml(key, true) + '</div>').join('') + '</div>' +
-      '<p class="sub">20个日常小场景，看看最近是哪几位“内在保护者”比较忙。每题选一个最像你当下反应的选项，凭第一感觉作答就好。</p>' +
-      '<button class="btn" id="startBtn">开始测试</button>' +
-      '<p class="note">' + DISCLAIMER + '</p>' +
+    '<div class="cover-single">' +
+      '<picture><source type="image/webp" srcset="assets/cover/intro-v051.webp"><img id="coverImage" src="assets/cover/intro-v051.jpg" width="780" height="1778" alt="" fetchpriority="high" decoding="async"></picture>' +
+      '<div class="sr-only"><span>选择题版 · 方案一</span><h1>你内在的动物园</h1><p>20个日常小场景，看看最近是哪几位“内在保护者”比较忙。每题选一个最像你当下反应的选项，凭第一感觉作答就好。</p><p>' + DISCLAIMER + '</p></div>' +
+      '<button class="btn cover-start" id="startBtn">开始测试</button>' +
     '</div>';
-  document.getElementById("startBtn").onclick = () => { state.idx = 0; renderQuestion(); };
+  const coverImage = document.getElementById('coverImage');
+  const showCover = () => coverImage.classList.add('is-ready');
+  if(coverImage.complete && coverImage.naturalWidth) showCover();
+  else { coverImage.onload = showCover; coverImage.onerror = () => { coverImage.closest('.cover-single').classList.add('cover-failed'); }; }
+  document.getElementById("startBtn").onclick = () => { state.idx = 0; prefetchExportAvatars(); renderQuestion(); };
 }
 
 function renderQuestion(){
@@ -183,15 +183,15 @@ function renderResults(){
     '<main class="result-page' + (main.count > 0 ? '' : ' self-only') + '">' +
     mainHtml + othersHtml + selfHtml +
     '<button class="btn result-save" id="saveResultBtn">保存结果图片</button>' +
-    '<p class="save-caption">生成完整长图，可长按或通过系统菜单存储图像</p>' +
-    '<div class="test-qr">' + qrSvg() + '<p>扫码，看看你的内在动物园</p></div>' +
     '<button class="btn result-restart" id="restartBtn">重新测一次</button>' +
     '<p class="note">' + DISCLAIMER + '</p><p class="version">V0.5</p>' +
     '</main>';
 
+  prepareResultExport(computeResults()).catch(() => {});
   document.getElementById("saveResultBtn").onclick = () => openResultExport();
   document.getElementById("restartBtn").onclick = () => {
     closeResultExport();
+    clearResultExportCache();
     state.idx = 0; state.answers = new Array(QUESTIONS.length).fill(null); state.order = [];
     renderIntro();
   };
