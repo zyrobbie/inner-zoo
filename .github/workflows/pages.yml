@@ -33,8 +33,12 @@ jobs:
           node-version: '22'
       - name: Build complete website from source
         run: npm run build
-      - name: Verify frozen content and all 20 website files
+      - name: Verify frozen content and website files
         run: node qa-browser/scripts/preflight.cjs
+      - name: Verify image export content
+        run: node scripts/test-export.cjs
+      - name: Verify approved scoring with independent model tests
+        run: node qa-browser/scripts/model-v05.cjs .
       - name: Upload structurally checked website
         uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
         with:

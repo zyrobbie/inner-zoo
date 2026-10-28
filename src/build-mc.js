@@ -1,4 +1,6 @@
 const fs = require("fs");
+const EXPORT_JS = fs.readFileSync(require("path").join(__dirname, "result-export.js"), "utf8");
+const QR = require("./test-qr.json");
 const { CSS } = require("./css.js");
 const { MASCOTS } = require("./mascots.js");
 const { AVATARS } = require("./avatar-assets.js");
@@ -30,6 +32,8 @@ const ANIMAL_ORDER = ${animalOrderJson};
 const MASCOTS = ${mascotsJson};
 const DISCLAIMER = ${disclaimerJson};
 const AVATARS = ${avatarsJson};
+const TEST_QR = ${JSON.stringify(QR)};
+${EXPORT_JS}
 
 const state = { idx: 0, answers: new Array(QUESTIONS.length).fill(null), order: [] };
 
@@ -52,6 +56,7 @@ function renderIntro(){
       '<div class="hero-icon">' + MASCOTS.self + '</div>' +
       '<span class="pill">选择题版 · 方案一</span>' +
       '<h1 class="title display">你内在的动物园</h1>' +
+      '<div class="cover-gallery" aria-hidden="true"><div class="cover-halo"></div>' + ['perfect','anxvig','please','anger','avoid','numb'].map((key,i) => '<div class="cover-portrait cover-position-' + i + '">' + avatarHtml(key, true) + '</div>').join('') + '</div>' +
       '<p class="sub">20个日常小场景，看看最近是哪几位“内在保护者”比较忙。每题选一个最像你当下反应的选项，凭第一感觉作答就好。</p>' +
       '<button class="btn" id="startBtn">开始测试</button>' +
       '<p class="note">' + DISCLAIMER + '</p>' +
@@ -150,15 +155,12 @@ function renderResults(){
     others.forEach(a => {
       const c = CATS[a.key];
       othersHtml += '<article class="card protector-card" data-protector="' + a.key + '">' +
-        '<div class="protector-heading">' +
-          '<div class="protector-icon">' + avatarHtml(a.key, false) + '</div>' +
-          '<div class="protector-heading-text">' +
+        '<div class="protector-icon">' + avatarHtml(a.key, false) + '</div>' +
+          '<div class="protector-copy">' +
             '<h3 class="protector-name display">' + c.mascot + '</h3>' +
             '<p class="protector-pct" data-role="' + a.key + '">' + c.name + ' · 出现在 ' + a.pct + '% 的选择里</p>' +
-          '</div>' +
-        '</div>' +
         '<p class="protector-quote" data-role="' + a.key + '">“' + c.quote + '”</p>' +
-        '<p class="protector-desc">' + c.desc + '</p>' +
+        '<p class="protector-desc">' + c.desc + '</p></div>' +
       '</article>';
     });
     othersHtml += '</section>';
@@ -180,11 +182,16 @@ function renderResults(){
   app.innerHTML =
     '<main class="result-page' + (main.count > 0 ? '' : ' self-only') + '">' +
     mainHtml + othersHtml + selfHtml +
+    '<button class="btn result-save" id="saveResultBtn">保存结果图片</button>' +
+    '<p class="save-caption">生成完整长图，可长按或通过系统菜单存储图像</p>' +
+    '<div class="test-qr">' + qrSvg() + '<p>扫码，看看你的内在动物园</p></div>' +
     '<button class="btn result-restart" id="restartBtn">重新测一次</button>' +
-    '<p class="note">' + DISCLAIMER + '</p>' +
+    '<p class="note">' + DISCLAIMER + '</p><p class="version">V0.5</p>' +
     '</main>';
 
+  document.getElementById("saveResultBtn").onclick = () => openResultExport();
   document.getElementById("restartBtn").onclick = () => {
+    closeResultExport();
     state.idx = 0; state.answers = new Array(QUESTIONS.length).fill(null); state.order = [];
     renderIntro();
   };

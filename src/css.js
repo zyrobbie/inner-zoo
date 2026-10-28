@@ -211,3 +211,42 @@ h1.title{font-size:26px; line-height:1.3; margin:0 0 10px; text-wrap:balance;}
 
 `;
 module.exports = { CSS };
+
+module.exports.CSS += `
+/* V0.5: approved mobile storybook cover, live text and final portraits. */
+:root[data-quiz-view="intro"] body{background:#F7F1DF;color:#536151}
+:root[data-quiz-view="intro"] .wrap{max-width:390px;padding:0;margin:auto}
+:root[data-quiz-view="intro"] .hero{border:0;border-radius:0;box-shadow:none;background:none;padding:max(33px,env(safe-area-inset-top)) 0 max(40px,env(safe-area-inset-bottom));text-align:center}
+:root[data-quiz-view="intro"] .hero-icon{width:42px;height:42px;margin:0 auto}
+:root[data-quiz-view="intro"] .hero-icon svg{width:100%;height:100%}
+:root[data-quiz-view="intro"] .pill{display:block;margin:14px 28px 0;padding:0;border:0;background:none;color:#69745C;font-size:12px;line-height:18px}
+:root[data-quiz-view="intro"] .title{font-size:32px;line-height:44px;margin:13px 16px 0;color:#2D493C}
+.cover-gallery{height:290px;margin-top:26px;position:relative}
+.cover-halo{position:absolute;left:9.5%;top:10px;width:81.5%;height:262px;border-radius:47% 54% 44% 51%;background:#E4E8CB;transform:rotate(-5deg)}
+.cover-portrait{position:absolute;width:27.7%;padding:4px 4px 7px;background:#FFFCF3;border-radius:20px;box-shadow:1px 4px #D7DAC1;box-sizing:border-box}
+.cover-portrait img{display:block;width:100%;height:auto;aspect-ratio:1;border-radius:16px}
+.cover-position-0{left:7.44%;top:21px;transform:rotate(7deg)}.cover-position-1{left:37.18%;top:6px;transform:rotate(-3deg)}.cover-position-2{left:66.67%;top:29px;transform:rotate(-8deg)}
+.cover-position-3{left:10%;top:152px;transform:rotate(-5deg)}.cover-position-4{left:38.72%;top:143px;transform:rotate(4deg)}.cover-position-5{left:67.44%;top:160px;transform:rotate(7deg)}
+:root[data-quiz-view="intro"] .sub{margin:22px 28px 0;text-align:left;font-size:17px;line-height:29px;color:#536151}
+:root[data-quiz-view="intro"] #startBtn{width:calc(100% - 56px);min-height:58px;margin:21px 28px 0;border-radius:17px;background:#355C47;color:#FFFCF3;font-size:18px;box-shadow:0 4px #D7DCC4}
+:root[data-quiz-view="intro"] .note{margin:36px 28px 0;padding-top:25px;border-top:1px solid #D6D9C3;font-size:14px;line-height:24px;text-align:left;color:#69745C}
+:root[data-quiz-view="results"] .wrap{padding-top:max(30px,env(safe-area-inset-top));padding-bottom:max(44px,env(safe-area-inset-bottom))}
+:root[data-quiz-view="results"] .main-card{min-height:calc(100svh - 60px);box-sizing:border-box;display:flex;flex-direction:column;justify-content:center}
+:root[data-quiz-view="results"] .protector-card{display:grid;grid-template-columns:64px minmax(0,1fr);gap:12px;padding:14px;margin-bottom:12px;border-radius:20px;align-items:start}
+:root[data-quiz-view="results"] .protector-card .protector-icon{width:64px;height:64px;border-radius:14px;margin:0}
+:root[data-quiz-view="results"] .protector-card .protector-name{font-size:17px;line-height:1.35;margin:0}
+:root[data-quiz-view="results"] .protector-card .protector-pct{font-size:12px;line-height:1.5;margin:5px 0 0}
+:root[data-quiz-view="results"] .protector-card .protector-quote{font-size:14px;line-height:1.5;margin:7px 0 6px;padding:0;border:0;background:none}
+:root[data-quiz-view="results"] .protector-card .protector-desc{font-size:14px;line-height:1.5;margin:0}
+.save-caption,.version{font-size:13px;text-align:center;color:var(--story-muted,#5D6956);line-height:1.6}.result-save{width:100%;margin-top:28px}.test-qr{text-align:center;margin:28px auto;font-size:14px}.test-qr svg{width:132px;height:132px;background:white;border:1px solid #DBDCC8;border-radius:8px}.test-qr p{margin:10px 0}
+.export-dialog{color:#2D493C;background:#F7F1DF;border:1px solid #DBDCC8;border-radius:20px;padding:18px;width:calc(100% - 32px);max-width:520px;max-height:90dvh;box-sizing:border-box;overflow:auto}.export-dialog::backdrop{background:#172b22b3}.export-dialog h2{font-size:20px;margin:0 0 12px}.export-dialog p{font-size:14px;line-height:1.6}.export-preview{overflow:auto;max-height:52dvh;border:1px solid #DBDCC8;border-radius:12px;background:white;-webkit-overflow-scrolling:touch}.export-preview img{display:block;width:100%;height:auto;max-height:none;touch-action:pan-y;-webkit-touch-callout:default;user-select:auto}.export-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.export-actions button,.export-actions a{font:600 14px/1.5 system-ui;padding:10px 14px;min-height:44px;border:1px solid #BEC8B5;border-radius:12px;background:#355C47;color:#fff;text-decoration:none;cursor:pointer}.export-actions .export-close{background:transparent;color:#355C47}.export-status{min-height:23px}.export-dialog [hidden]{display:none!important}
+@media(max-width:359px){:root[data-quiz-view="results"] .wrap{padding-left:16px;padding-right:16px}:root[data-quiz-view="results"] .protector-card{grid-template-columns:52px minmax(0,1fr);gap:10px;padding:12px}:root[data-quiz-view="results"] .protector-card .protector-icon{width:52px;height:52px}}
+`;
+module.exports.CSS += `
+/* The portrait floats beside the heading; the complete description regains the
+   full row width below it, so four cards stay compact without shrinking text. */
+:root[data-quiz-view="results"] .protector-card{display:flow-root;padding:12px 14px}
+:root[data-quiz-view="results"] .protector-card .protector-icon{float:left;margin:0 12px 6px 0;width:56px;height:56px}
+:root[data-quiz-view="results"] .protector-copy{display:contents}
+:root[data-quiz-view="results"] .protector-card .protector-quote{clear:both}
+`;
