@@ -5,6 +5,7 @@ const RESULT_STYLE = {
   card:'#FFFCF3', line:'#C5CDB9', self:'#EFDEA1', selfInk:'#65532C',
   sans:'"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif',
   serif:'"Noto Serif CJK SC","Songti SC","STSong",serif',
+  mainRoles:{please:'#934832',avoid:'#406749'},
   roles:{anger:'#A34024',perfect:'#69558E',anxvig:'#8A591D',please:'#9C5037',avoid:'#466F51',numb:'#795A3A'}
 };
 let sharedResultScene = null;
@@ -48,7 +49,11 @@ function getResultScene(result){
     if(balance && lines.length>1){
       const chars=Array.from(value),balanced=[],count=lines.length;let offset=0;
       for(let i=0;i<count;i++){const take=Math.ceil((chars.length-offset)/(count-i));balanced.push(chars.slice(offset,offset+take).join(''));offset+=take;}
-      if(balanced.every(line=>measure.measureText(line).width<=w))lines=balanced;
+      for(let i=1;i<balanced.length;i++){
+        while(/^[，。！？；：、”）》]/.test(balanced[i])){balanced[i-1]+=balanced[i][0];balanced[i]=balanced[i].slice(1);}
+        while(/[（“《]$/.test(balanced[i-1])){balanced[i]=balanced[i-1].slice(-1)+balanced[i];balanced[i-1]=balanced[i-1].slice(0,-1);}
+      }
+      if(balanced.every(line=>line && measure.measureText(line).width<=w))lines=balanced;
     }
     let inkBottom=y;
     lines.forEach((line,i)=>{
@@ -73,12 +78,12 @@ function getResultScene(result){
     let line=text(c.mascot,29,top+318,width-58,32,45,true,RESULT_STYLE.ink,true,true);
     const tied=animals.slice(1).filter(a=>a.count===main.count).map(a=>CATS[a.key].name);
     const tie=tied.length?'（与「'+tied.join('」「')+'」并列）':'';
-    line=text(c.name+' · 出现在 '+main.pct+'% 的选择里'+tie,30,line.end+6,width-60,14,22,false,RESULT_STYLE.roles[main.key],true);
+    line=text(c.name+' · 出现在 '+main.pct+'% 的选择里'+tie,30,line.end+6,width-60,14,22,false,RESULT_STYLE.mainRoles[main.key]||RESULT_STYLE.roles[main.key],true);
     const quoteTop=line.end+20;
     measure.font=sceneFont(18,false);
     const quoteHeight=resultLines(measure,'“'+c.quote+'”',width-92).length*29+26;
     rect(32,quoteTop,width-64,quoteHeight,18,'#F8F8EB');
-    text('“'+c.quote+'”',46,quoteTop+15,width-92,18,29,false,RESULT_STYLE.ink,true);
+    text('“'+c.quote+'”',46,quoteTop+15,width-92,18,29,false,RESULT_STYLE.ink,true,true);
     line=text(c.desc,36,quoteTop+quoteHeight+27,width-72,16,31);
     y=Math.ceil(line.inkBottom+24);panel.h=y-top;
     scene.sections.push({kind:'main',key:main.key,x:16,y:top,width:width-32,height:panel.h,bodyInkBottom:line.inkBottom,bottomPadding:y-line.inkBottom});

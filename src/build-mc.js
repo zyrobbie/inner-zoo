@@ -204,11 +204,20 @@ let resultResizeTimer;
 window.addEventListener('resize', () => {
   clearTimeout(resultResizeTimer);
   resultResizeTimer = setTimeout(() => {
-    if(document.documentElement.getAttribute('data-quiz-view') === 'results' && sharedResultScene && sharedResultScene.width !== resultLayoutWidth()){
+    if(document.documentElement.getAttribute('data-quiz-view') === 'results' && displayedResultLayoutWidth() !== null && displayedResultLayoutWidth() !== resultLayoutWidth()){
       closeResultExport(); clearResultExportCache(); renderResults();
     }
   },120);
 });
+function displayedResultLayoutWidth(){
+  const svg = app.querySelector('.shared-result-scene');
+  return svg ? Number(svg.getAttribute('width')) : null;
+}
+function syncDisplayedResultScene(){
+  // The DOM is authoritative: generating a new cache entry must never stand in
+  // for actually rendering that scene on the page. This runs before saving.
+  if(document.documentElement.getAttribute('data-quiz-view') === 'results' && displayedResultLayoutWidth() !== resultLayoutWidth()) renderResults();
+}
 function start(){ renderIntro(); }
 if (window.claude && window.claude.hot) {
   window.claude.hot.ready ? window.claude.hot.ready(start) : start();

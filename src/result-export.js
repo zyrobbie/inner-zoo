@@ -101,6 +101,7 @@ async function makeResultPng(result){
   return {blob,width:canvas.width,height:canvas.height,commonHeight:scene.height*scale};
 }
 async function openResultExport(){
+  if(typeof syncDisplayedResultScene === 'function') syncDisplayedResultScene();
   if(exportDialog) return;
   const generation = ++exportGeneration;
   const trigger = document.activeElement;

@@ -20,6 +20,7 @@ for(const width of [280,320,375,390]){
     assert.equal(painted[i].text,item.text);assert.equal(painted[i].x,item.x);assert.equal(painted[i].y,item.y);assert.equal(painted[i].font,item.font);
     assert(svg.includes('x="'+item.x+'" y="'+item.y+'" style="font:'+s.escapeResultXml(item.font)+'" fill="'+item.color+'">'+s.escapeResultXml(item.text)+'</text>'));
     if(item.size===32)assert([...item.text].length>=2,'Orphaned main title character');
+    if(item.size===18)assert((item.text.match(/[\u3400-\u9fff]/g)||[]).length>=2,'Orphaned main quote character');
     assert(item.y>0&&item.y<scene.height);assert(item.x>=0&&item.x<width);
     assert(!/^[，。！？；：、”）》]/.test(item.text),'punctuation starts line: '+item.text);
     assert(!/[（“《]$/.test(item.text),'opening punctuation ends line: '+item.text);

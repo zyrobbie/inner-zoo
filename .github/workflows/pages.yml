@@ -43,6 +43,7 @@ jobs:
           node qa-browser/scripts/export-ui-faults.cjs .
       - name: Verify shared web and image result layout
         run: |
+          node scripts/test-resize-save.cjs
           node scripts/test-shared-layout.cjs
           node qa-browser/scripts/layout-independent.cjs .
       - name: Verify approved scoring with independent model tests
