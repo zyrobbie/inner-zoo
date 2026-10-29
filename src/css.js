@@ -55,7 +55,8 @@ h1.title{font-size:26px; line-height:1.3; margin:0 0 10px; text-wrap:balance;}
 .opt{display:block; width:100%; text-align:left; padding:15px 16px; margin-bottom:10px; border-radius:14px; border:1.5px solid var(--line); background:var(--surface-2); color:var(--ink); font-size:15px; line-height:1.55; cursor:pointer; font-family:inherit; transition:border-color .12s ease, background .12s ease;}
 .opt:last-child{margin-bottom:0}
 .opt:active{background:var(--accent-soft);}
-.opt:hover{border-color:var(--accent);}
+/* Unanswered options remain neutral, including iOS sticky hover. */
+.opt:focus:not(:focus-visible){outline:none;}
 
 .likert-item{margin-bottom:0;}
 .likert-text{font-family:'Fraunces','Noto Serif SC',serif; font-size:19px; line-height:1.6; margin:0 0 22px; text-wrap:balance;}
@@ -110,7 +111,8 @@ h1.title{font-size:26px; line-height:1.3; margin:0 0 10px; text-wrap:balance;}
 [hidden]{display:none!important}
 /* Phase 2: only the authorised persistent choice highlight changes question UI. */
 .opt.sel{border-color:var(--accent); background:var(--accent-soft); box-shadow:inset 4px 0 0 var(--accent); font-weight:600;}
-.opt:focus-visible,.btn:focus-visible{outline:3px solid var(--accent); outline-offset:4px;}
+.opt:focus-visible{outline:3px dashed var(--accent); outline-offset:4px;}
+.btn:focus-visible{outline:3px solid var(--accent); outline-offset:4px;}
 
 /* Gentle storybook results. The intro and quiz retain their original layout. */
 :root{

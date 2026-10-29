@@ -48,6 +48,8 @@ jobs:
           node qa-browser/scripts/layout-independent.cjs .
       - name: Verify approved copy and display rules
         run: node qa-browser/scripts/copy-model.cjs .
+      - name: Verify answer focus and four weather icons
+        run: node qa-browser/scripts/v061-regression.cjs .
       - name: Verify approved scoring with independent model tests
         run: node qa-browser/scripts/model-v05.cjs .
       - name: Upload structurally checked website
