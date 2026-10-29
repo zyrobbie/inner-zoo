@@ -85,7 +85,8 @@ function canvasPngBlob(canvas){
 async function makeResultPng(result){
   const scene=getResultScene(result);
   const images={};
-  await Promise.all(result.animals.filter(a=>a.count>0).map(async a=>{images[a.key]=await loadExportAvatar(a.key);}));
+  const displayed=getResultPresentation(result);
+  await Promise.all([displayed.main,...displayed.others].filter(Boolean).map(async a=>{images[a.key]=await loadExportAvatar(a.key);}));
   const scale=2,canvas=document.createElement('canvas');
   canvas.width=scene.width*scale;canvas.height=(scene.height+246)*scale;
   const ctx=canvas.getContext('2d');
@@ -108,7 +109,7 @@ async function openResultExport(){
   const dialog = document.createElement('dialog'); exportDialog = dialog;
   dialog.className = 'export-dialog';
   dialog.setAttribute('aria-labelledby','exportTitle');
-  dialog.innerHTML = '<h2 id="exportTitle">保存你的内在动物园</h2><p class="export-status" role="status" aria-live="polite">正在准备图片…</p><div class="export-preview" hidden><img alt="完整测试结果长图，可上下滑动查看并长按保存"></div><p class="export-help">图片生成后，可长按图片选择“存储图像”。也可打开系统分享菜单，选择“存储图像”；具体选项以手机系统为准。微信内若没有保存选项，请在系统浏览器打开本页再保存。</p><div class="export-actions"><button class="export-share" hidden>系统分享 / 存储图像</button><a class="export-download" hidden download="内在动物园-V0.5.png">下载 PNG</a><button class="export-retry" hidden>重新生成</button><button class="export-close">关闭</button></div>';
+  dialog.innerHTML = '<h2 id="exportTitle">保存你的内在动物园</h2><p class="export-status" role="status" aria-live="polite">正在准备图片…</p><div class="export-preview" hidden><img alt="完整测试结果长图，可上下滑动查看并长按保存"></div><p class="export-help">图片生成后，可长按图片选择“存储图像”。也可打开系统分享菜单，选择“存储图像”；具体选项以手机系统为准。微信内若没有保存选项，请在系统浏览器打开本页再保存。</p><div class="export-actions"><button class="export-share" hidden>系统分享 / 存储图像</button><a class="export-download" hidden download="内在动物园-V0.6.png">下载 PNG</a><button class="export-retry" hidden>重新生成</button><button class="export-close">关闭</button></div>';
   document.body.appendChild(dialog);
   if(typeof dialog.showModal === 'function') dialog.showModal(); else {dialog.setAttribute('open','');dialog.classList.add('export-fallback');dialog.setAttribute('role','dialog');dialog.setAttribute('aria-modal','true');}
   const status = dialog.querySelector('.export-status');
@@ -125,7 +126,7 @@ async function openResultExport(){
     const download=dialog.querySelector('.export-download');download.href=exportObjectUrl;download.hidden=false;
     download.onclick=()=>{status.textContent='已请求下载；手机可能打开原图。若未进入相册，请长按图片选择“存储图像”。';};
     let file=null;
-    try{if(typeof File==='function') file=new File([output.blob],'内在动物园-V0.5.png',{type:'image/png'});}catch(_){}
+    try{if(typeof File==='function') file=new File([output.blob],'内在动物园-V0.6.png',{type:'image/png'});}catch(_){}
     const share=dialog.querySelector('.export-share');
     let shareSupported=false;
     try{shareSupported=Boolean(file && navigator.share && navigator.canShare && navigator.canShare({files:[file]}));}catch(_){}

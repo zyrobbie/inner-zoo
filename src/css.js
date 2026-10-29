@@ -270,3 +270,5 @@ module.exports.CSS += `
 :root[data-quiz-view="results"] .result-save,:root[data-quiz-view="results"] .result-restart{display:block;width:calc(100% - 48px);min-height:54px;margin:4px 24px 0;border-radius:15px;background:#355C47;color:#FFFCF3;font-size:17px;line-height:24px;font-weight:700}
 :root[data-quiz-view="results"] .result-restart{margin-top:14px;background:#F7F1DF;color:#2D493C;border:1px solid #8EAA90}
 `;
+
+module.exports.CSS += `:root[data-quiz-view="intro"] #startBtn.cover-start{top:var(--cover-top,68.6164%);height:var(--cover-height,6.5242%)}.result-layout-fallback{padding:16px}.result-layout-fallback .main-desc{font-size:16px;line-height:26px}`;

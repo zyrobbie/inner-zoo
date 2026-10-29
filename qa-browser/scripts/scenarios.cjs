@@ -32,9 +32,9 @@ const smoke = questions.map((q,i) => q.opts.some(o => o[1] === smokePattern[i%8]
 const cases = {
   smoke,
   allSelf: Array(20).fill('self'),
-  zeroSelf: questions.map(q => q.opts[0][1]),
+  zeroSelf: questions.map(q => q.opts.find(o => o[1] !== 'self')[1]),
   twoWayTie: solveTargets({ anger:5, perfect:5, self:10 }),
   sixWayTie: solveTargets({ anger:3, perfect:3, anxvig:3, please:3, avoid:3, numb:3, self:2 }),
 };
-assert.deepEqual(countsFor(smoke), { anger:0, perfect:5, anxvig:1, please:1, avoid:0, numb:0, self:13 });
+assert.deepEqual(countsFor(smoke), { anger:0, perfect:5, anxvig:3, please:0, avoid:0, numb:0, self:12 });
 module.exports = { ...content, keys, countsFor, solveTargets, cases };

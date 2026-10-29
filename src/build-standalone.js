@@ -35,6 +35,6 @@ for (const file of fs.readdirSync(avatarsFrom)) {
 console.log('copied local avatar derivatives to dist/assets/avatars');
 const coverTo = path.join(__dirname, '../dist/assets/cover');
 fs.mkdirSync(coverTo, { recursive: true });
-for (const name of ['intro-v051.webp','intro-v051.jpg']) {
+for (const name of ['intro-v060.webp','intro-v060.jpg']) {
  fs.copyFileSync(path.join(__dirname, '../assets/cover', name), path.join(coverTo,name));
 }

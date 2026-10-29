@@ -2,7 +2,7 @@
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict'),crypto=require('node:crypto');
 const root=path.resolve(process.argv[2]||'zoo-v05');
 const data=fs.readFileSync(path.join(root,'src/data.js'));
-assert.equal(crypto.createHash('sha256').update(data).digest('hex'),'47ff8dcbe58923401401b1a97be685e25db0ee031ab7a723cf74fbd7091bd885','Question/category/disclaimer source unchanged from approved d8830f1');
+assert.equal(crypto.createHash('sha256').update(data).digest('hex'),require('../fixtures/content-contract.json').sourceSha256,'Question/category/disclaimer source matches approved V5 copy contract');
 const {CATS,MC_QUESTIONS:QUESTIONS,ANIMAL_ORDER,DISCLAIMER}=require(path.join(root,'src/data.js'));
 assert.equal(QUESTIONS.length,20);
 const occurrences=Object.fromEntries([...ANIMAL_ORDER,'self'].map(k=>[k,0]));

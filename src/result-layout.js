@@ -35,6 +35,12 @@ function resultLines(ctx,text,width){
   if(line)lines.push(line);
   return lines;
 }
+function getResultPresentation(result){
+  const active=result.animals.filter(a=>a.count>0);
+  const selfCount=Math.max(0,Math.min(20,Math.round(result.selfPct/5)));
+  return {main:active[0]||null,others:active.slice(1,3),allSelf:active.length===0,
+    weather:COPY.weather.find(w=>selfCount>=w.min && selfCount<=w.max)};
+}
 function getResultScene(result){
   const width=resultLayoutWidth(), key=resultSceneKey(result,width);
   if(sharedResultScene && sharedResultScene.key===key)return sharedResultScene;
@@ -67,55 +73,59 @@ function getResultScene(result){
     return {end:y+lines.length*lineHeight,inkBottom,lines};
   }
   function avatar(key,x,y,size){items.push({kind:'avatar',key,x,y,size,r:size*.2});}
-  const animals=result.animals.filter(a=>a.count>0);
-  let y=24;
-  if(animals.length){
-    const main=animals[0],c=CATS[main.key],top=y;
+  const presentation=getResultPresentation(result);
+  const animals=[presentation.main,...presentation.others].filter(Boolean);
+  let y=16;
+  if(presentation.main){
+    const main=presentation.main,c=CATS[main.key],top=y;
     const panel=rect(16,top,width-32,0,24,RESULT_STYLE.main,RESULT_STYLE.mainLine);panel.section='main';panel.key=main.key;
-    text('最近最忙的一位',36,top+24,width-72,14,22,true,RESULT_STYLE.ink,true);
-    items.push({kind:'ellipse',cx:width/2,cy:top+187,rx:117,ry:117,fill:'#C5D4AF'});
-    avatar(main.key,(width-224)/2,top+76,224);
-    let line=text(c.mascot,29,top+318,width-58,32,45,true,RESULT_STYLE.ink,true,true);
-    const tied=animals.slice(1).filter(a=>a.count===main.count).map(a=>CATS[a.key].name);
-    const tie=tied.length?'（与「'+tied.join('」「')+'」并列）':'';
-    line=text(c.name+' · 出现在 '+main.pct+'% 的选择里'+tie,30,line.end+6,width-60,14,22,false,RESULT_STYLE.mainRoles[main.key]||RESULT_STYLE.roles[main.key],true);
-    const quoteTop=line.end+20;
+    text(COPY.mainLabel,32,top+18,width-64,14,22,true,RESULT_STYLE.ink,true);
+    items.push({kind:'ellipse',cx:width/2,cy:top+136,rx:92,ry:92,fill:'#C5D4AF'});
+    avatar(main.key,(width-176)/2,top+48,176);
+    let line=text(c.mascot,29,top+236,width-58,32,40,true,RESULT_STYLE.ink,true,true);
+    line=text(c.title,30,line.end+4,width-60,14,21,false,RESULT_STYLE.mainRoles[main.key]||RESULT_STYLE.roles[main.key],true);
+    const quoteTop=line.end+12;
     measure.font=sceneFont(18,false);
-    const quoteHeight=resultLines(measure,'“'+c.quote+'”',width-92).length*29+26;
-    rect(32,quoteTop,width-64,quoteHeight,18,'#F8F8EB');
-    text('“'+c.quote+'”',46,quoteTop+15,width-92,18,29,false,RESULT_STYLE.ink,true,true);
-    line=text(c.desc,36,quoteTop+quoteHeight+27,width-72,16,31);
+    const quoteHeight=resultLines(measure,'“'+c.quote+'”',width-84).length*26+20;
+    rect(28,quoteTop,width-56,quoteHeight,18,'#F8F8EB');
+    text('“'+c.quote+'”',42,quoteTop+10,width-84,18,26,false,RESULT_STYLE.ink,true,true);
+    y=quoteTop+quoteHeight+16;
+    c.main.forEach((paragraph,i)=>{line=text(paragraph,32,y,width-64,16,26);y=line.end+(i<c.main.length-1?8:0);});
     y=Math.ceil(line.inkBottom+24);panel.h=y-top;
     scene.sections.push({kind:'main',key:main.key,x:16,y:top,width:width-32,height:panel.h,bodyInkBottom:line.inkBottom,bottomPadding:y-line.inkBottom});
-    y+=32;
+    y+=28;
   }
-  if(animals.length>1){
-    y=text('其他也在活动的部分',22,y,width-44,20,30,true,RESULT_STYLE.ink).end+18;
-    animals.slice(1).forEach(a=>{
+  if(presentation.others.length){
+    y=text(COPY.othersLabel,22,y,width-44,20,30,true,RESULT_STYLE.ink).end+16;
+    presentation.others.forEach(a=>{
       const c=CATS[a.key],top=y;
       const panel=rect(16,y,width-32,0,18,RESULT_STYLE.card,RESULT_STYLE.line);panel.section='secondary';panel.key=a.key;
       const stripe=rect(17,y+20,4,0,2,RESULT_STYLE.roles[a.key]);
       avatar(a.key,30,y+12,56);
       let line=text(c.mascot,98,y+14,width-132,17,24,true,RESULT_STYLE.ink);
-      line=text(c.name+' · 出现在 '+a.pct+'% 的选择里',98,line.end+5,width-132,12,18,false,RESULT_STYLE.roles[a.key]);
+      line=text(c.title,98,line.end+5,width-132,13,20,false,RESULT_STYLE.roles[a.key]);
       y=Math.max(top+76,line.end+8);
       y=text('“'+c.quote+'”',34,y,width-68,14,21).end+5;
-      y=text(c.desc,34,y,width-68,14,21).end+14;
+      y=text(c.secondary,34,y,width-68,14,21).end+14;
       panel.h=y-top;stripe.h=panel.h-40;
       scene.sections.push({kind:'secondary',key:a.key,x:16,y:top,width:width-32,height:panel.h});
       y+=12;
-    });y+=16;
+    });y+=12;
   }
-  y=text('真我',22,y,width-44,20,30,true,RESULT_STYLE.ink).end+12;
+  if(!presentation.allSelf)y=text(COPY.ending,24,y,width-48,15,25,false,RESULT_STYLE.text).end+28;
+  y=text(presentation.allSelf?COPY.allSelfHeading:COPY.weatherHeading,22,y,width-44,20,30,true,RESULT_STYLE.ink).end+12;
   const selfTop=y,panel=rect(16,y,width-32,0,22,RESULT_STYLE.self,'#CDBB7D');panel.section='self';
   items.push({kind:'sun',x:32,y:y+16,size:52});
-  const selfTitle=text('真我在场 · '+result.selfPct+'%',90,y+29,width-116,22,32,true,RESULT_STYLE.selfInk);
-  const selfText=result.selfPct>0?'有 '+result.selfPct+'% 的选择，是真我在直接回应当下。'+CATS.self.desc:'这次的选择里，真我没有直接出现。这并不代表它不在，它一直在，只是需要被留意。';
-  y=text(selfText,34,Math.max(y+74,selfTitle.end+13),width-68,16,27,false,RESULT_STYLE.selfInk).end+22;
-  panel.h=y-selfTop;
+  const selfTitle=text(presentation.weather.name,90,y+29,width-116,22,32,true,RESULT_STYLE.selfInk);
+  y=text(presentation.weather.desc,34,Math.max(y+74,selfTitle.end+13),width-68,16,27,false,RESULT_STYLE.selfInk).end+14;
+  if(presentation.allSelf)y=text(COPY.allSelfRest,34,y,width-68,16,27,false,RESULT_STYLE.selfInk).end+14;
+  CATS.self.paragraphs.forEach((paragraph,i)=>{y=text(paragraph,34,y,width-68,15,26,false,RESULT_STYLE.selfInk).end+(i<CATS.self.paragraphs.length-1?8:0);});
+  y+=22;panel.h=y-selfTop;
   scene.sections.push({kind:'self',x:16,y:selfTop,width:width-32,height:panel.h});
-  y+=28;y=text(DISCLAIMER,24,y,width-48,13,24,false,'#5D6956').end;
-  y+=16;y=text('V0.5',24,y,width-48,13,20,false,'#5D6956',true).end+24;
+  y+=28;
+  if(presentation.allSelf)y=text(COPY.ending,24,y,width-48,15,25,false,RESULT_STYLE.text).end+24;
+  y=text(DISCLAIMER,24,y,width-48,13,24,false,'#5D6956').end;
+  y+=16;y=text('V0.6',24,y,width-48,13,20,false,'#5D6956',true).end+24;
   scene.height=Math.ceil(y);sharedResultScene=scene;return scene;
 }
 function escapeResultXml(value){return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));}

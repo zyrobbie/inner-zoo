@@ -4,7 +4,7 @@ from pathlib import Path
 import re,json,math,random,html
 P=Path(__file__).resolve().parents[1]
 import subprocess
-copy=json.loads(subprocess.check_output(['node','-e',"const {DISCLAIMER}=require('./src/data.js');console.log(JSON.stringify({pill:'选择题版 · 方案一',title:'你内在的动物园',description:'20个日常小场景，看看最近是哪几位“内在保护者”比较忙。每题选一个最像你当下反应的选项，凭第一感觉作答就好。',button:'开始测试',disclaimer:DISCLAIMER}))"],cwd=P))
+copy=json.loads(subprocess.check_output(['node','-e',"const {DISCLAIMER,COPY}=require('./src/data.js');console.log(JSON.stringify({title:'你内在的动物园',description:COPY.intro,button:'开始测试',disclaimer:DISCLAIMER}))"],cwd=P))
 S=2; W=390; H=1000
 im=Image.new('RGB',(W*S,H*S),'#F7F1DF');d=ImageDraw.Draw(im)
 def box(b):return tuple(round(v*S) for v in b)
@@ -33,7 +33,7 @@ cx=195;cy=52
 for a in range(0,360,45):
  t=math.radians(a);d.line(box((cx+14*math.cos(t),cy+14*math.sin(t),cx+19*math.cos(t),cy+19*math.sin(t))),fill='#B28A25',width=2*S)
 d.ellipse(box((cx-9,cy-9,cx+9,cy+9)),fill='#B28A25')
-text(195,89,copy['pill'],12,'#69745C',center=True)
+# V5 copy removes the previous edition label; artwork composition is retained.
 text(195,120,copy['title'],32,'#2D493C',True,True,True)
 # Painterly-paper ensemble: unchanged final portrait assets, individually framed.
 d.ellipse(box((37,203,355,465)),fill='#E4E8CB')
@@ -64,6 +64,8 @@ last=para(copy['disclaimer'],28,sep+25,14,334,24,'#69725E')
 # Fit full content and retain bottom safe area.
 im=im.crop((0,0,W*S,int((last+40)*S)))
 (P/'assets/cover').mkdir(exist_ok=True)
-im.save(P/'assets/cover/intro-v051.webp',quality=88,method=6)
-im.save(P/'assets/cover/intro-v051.jpg',quality=90,optimize=True)
+im.save(P/'assets/cover/intro-v060.webp',quality=88,method=6)
+im.save(P/'assets/cover/intro-v060.jpg',quality=90,optimize=True)
 print({'size':im.size,'description_end':end,'disclaimer_start':sep+25,'disclaimer_end':last,'chars':{k:len(v) for k,v in copy.items()}})
+
+(P/'assets/cover/intro-v060-layout.json').write_text(json.dumps({'width':W,'height':last+40,'scale':S,'button':{'x':28,'y':end+21,'width':334,'height':58}},separators=(',',':'))+'\n')

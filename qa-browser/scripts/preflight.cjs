@@ -6,7 +6,7 @@ const { project, dist, qa } = require('./paths.cjs');
 const { sourceSha256, animalOrder, cases, countsFor } = require('./scenarios.cjs');
 const hash = p => crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');
 assert.equal(hash(path.join(project,'src/data.js')), sourceSha256, 'Frozen content contract changed: require approved content review before refreshing it');
-const expected = ['index.html','quiz-mc.html','assets/cover/intro-v051.webp','assets/cover/intro-v051.jpg', ...animalOrder.flatMap(k => [`assets/avatars/${k}-256.webp`,`assets/avatars/${k}-640.webp`,`assets/avatars/${k}-640.png`])];
+const expected = ['index.html','quiz-mc.html','assets/cover/intro-v060.webp','assets/cover/intro-v060.jpg', ...animalOrder.flatMap(k => [`assets/avatars/${k}-256.webp`,`assets/avatars/${k}-640.webp`,`assets/avatars/${k}-640.png`])];
 const files = expected.map(relative => {
   const full = path.join(dist, relative);
   assert.ok(fs.statSync(full).size > 0, `Missing complete-dist file ${relative}`);
