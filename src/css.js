@@ -261,3 +261,12 @@ module.exports.CSS += `
 `;
 
 module.exports.CSS += `.export-fallback{display:block;position:fixed;z-index:10000;left:50%;top:50%;transform:translate(-50%,-50%);margin:0;box-shadow:0 0 0 100vmax #172b22b3}`;
+
+module.exports.CSS += `
+/* V0.5.2: one measured scene, rendered as live vector text and the same PNG. */
+:root[data-quiz-view="results"] body{background:#F7F1DF;color:#2D493C;background-image:none}
+:root[data-quiz-view="results"] .wrap{max-width:390px;padding:0 0 max(36px,env(safe-area-inset-bottom))}
+.shared-result-scene{display:block;max-width:100%;height:auto;overflow:visible}
+:root[data-quiz-view="results"] .result-save,:root[data-quiz-view="results"] .result-restart{display:block;width:calc(100% - 48px);min-height:54px;margin:4px 24px 0;border-radius:15px;background:#355C47;color:#FFFCF3;font-size:17px;line-height:24px;font-weight:700}
+:root[data-quiz-view="results"] .result-restart{margin-top:14px;background:#F7F1DF;color:#2D493C;border:1px solid #8EAA90}
+`;

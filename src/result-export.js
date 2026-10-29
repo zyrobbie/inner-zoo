@@ -48,9 +48,9 @@ function loadExportAvatar(key){
 function prefetchExportAvatars(){
   ANIMAL_ORDER.forEach(key => { loadExportAvatar(key).catch(() => {}); });
 }
-function clearResultExportCache(){ resultExportCache = null; }
+function clearResultExportCache(){ resultExportCache = null; sharedResultScene = null; }
 function prepareResultExport(result){
-  const key = JSON.stringify(result);
+  const key = resultSceneKey(result,resultLayoutWidth());
   if(resultExportCache && resultExportCache.key === key) return resultExportCache.promise;
   const record = {key,promise:null}; resultExportCache = record;
   record.promise = makeResultPng(result).then(output => {record.output=output;return output;}).catch(error=>{
@@ -83,76 +83,22 @@ function canvasPngBlob(canvas){
   });
 }
 async function makeResultPng(result){
-  // All fonts are local/system fonts. Waiting for document.fonts.ready can hang
-  // in embedded iOS browsers and is unnecessary for this system-font canvas.
-  const animals = result.animals.filter(a => a.count > 0);
-  const images = {};
-  await Promise.all(animals.map(async a => { images[a.key] = await loadExportAvatar(a.key); }));
-  // Measure first, then paint once at 2x. There is no viewport screenshot/cropping.
-  const width = 420, scale = 2;
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
-  if(!ctx) throw new Error('当前浏览器不能生成图片，请换用系统浏览器。');
-  const blocks = [];
-  const panels = [];
-  let y = 38;
-  function textBlock(text, size, lineHeight, options){
-    const o = options || {}, x = o.x || 28, w = o.width || width - x - 28;
-    ctx.font = (o.bold ? '600 ' : '') + size + 'px system-ui, sans-serif';
-    const lines = wrapResultText(ctx,text,w);
-    blocks.push({kind:'text',lines,size,lineHeight,x,y,color:o.color || '#2D493C',bold:o.bold});
-    y += lines.length * lineHeight;
-  }
-  textBlock('你的内在动物园',26,36,{bold:true});
-  y += 18;
-  animals.forEach((a,i) => {
-    const c = CATS[a.key];
-    if(i === 0){
-      textBlock('最近最忙的一位',14,22,{color:'#657455'}); y += 12;
-      blocks.push({kind:'image',key:a.key,x:100,y,size:220}); y += 238;
-      textBlock(c.mascot,26,36,{bold:true}); y += 8;
-      const ties = animals.slice(1).filter(b => b.count === a.count).map(b => CATS[b.key].name);
-      textBlock(c.name+' · 出现在 '+a.pct+'% 的选择里'+(ties.length ? '（与「'+ties.join('」「')+'」并列）' : ''),15,24);
-      y += 14; textBlock('“'+c.quote+'”',18,29); y += 12;
-      textBlock(c.desc,16,28); y += 30;
-    } else {
-      if(i === 1){ textBlock('其他也在活动的部分',18,28,{bold:true}); y += 16; }
-      const top = y;
-      blocks.push({kind:'image',key:a.key,x:28,y,size:68});
-      textBlock(c.mascot,18,27,{x:110,bold:true});
-      textBlock(c.name+' · 出现在 '+a.pct+'% 的选择里',14,22,{x:110});
-      y = Math.max(y,top+68)+12;
-      textBlock('“'+c.quote+'”',16,26); y += 8;
-      textBlock(c.desc,15,25); panels.push({y:top-12,height:y-top+24}); y += 38;
-    }
-  });
-  textBlock('真我',20,30,{bold:true}); y += 6;
-  textBlock('真我在场 · '+result.selfPct+'%',18,28,{bold:true}); y += 8;
-  textBlock(result.selfPct > 0 ? '有 '+result.selfPct+'% 的选择，是真我在直接回应当下。'+CATS.self.desc : '这次的选择里，真我没有直接出现。这并不代表它不在，它一直在，只是需要被留意。',16,27);
-  y += 30; textBlock(DISCLAIMER,13,23,{color:'#657455'});
-  y += 28;
-  const qrY = y, qrSize = TEST_QR.length * 4; y += qrSize + 12;
-  textBlock('扫码，看看你的内在动物园',16,25,{x:70,width:310});
-  y += 10; textBlock('内在动物园 · V0.5',12,20,{x:148,width:230,color:'#657455'}); y += 28;
-  canvas.width = width*scale; canvas.height = Math.ceil(y)*scale;
-  ctx.scale(scale,scale); ctx.fillStyle='#F7F1DF'; ctx.fillRect(0,0,width,y);
-  ctx.fillStyle='#FFFCF3';
-  panels.forEach(p=>{ctx.beginPath();roundedExportRect(ctx,16,p.y,width-32,p.height,18);ctx.fill();});
-  ctx.textBaseline = 'top';
-  blocks.forEach(b => {
-    if(b.kind === 'image'){
-      ctx.save(); ctx.beginPath(); roundedExportRect(ctx,b.x,b.y,b.size,b.size,20); ctx.clip();
-      ctx.drawImage(images[b.key],b.x,b.y,b.size,b.size); ctx.restore();
-    } else {
-      ctx.font=(b.bold?'600 ':'')+b.size+'px system-ui, sans-serif';ctx.fillStyle=b.color;
-      b.lines.forEach((line,i) => ctx.fillText(line,b.x,b.y+i*b.lineHeight));
-    }
-  });
-  const qrX=(width-qrSize)/2;
+  const scene=getResultScene(result);
+  const images={};
+  await Promise.all(result.animals.filter(a=>a.count>0).map(async a=>{images[a.key]=await loadExportAvatar(a.key);}));
+  const scale=2,canvas=document.createElement('canvas');
+  canvas.width=scene.width*scale;canvas.height=(scene.height+246)*scale;
+  const ctx=canvas.getContext('2d');
+  if(!ctx)throw new Error('当前浏览器不能生成图片，请换用系统浏览器。');
+  ctx.scale(scale,scale);ctx.fillStyle=RESULT_STYLE.paper;ctx.fillRect(0,0,scene.width,scene.height+246);
+  paintResultScene(ctx,scene,images);
+  const n=TEST_QR.length,cell=4,qrSize=n*cell,qrX=(scene.width-qrSize)/2,qrY=scene.height+8;
   ctx.fillStyle='white';ctx.fillRect(qrX,qrY,qrSize,qrSize);ctx.fillStyle='#203b2d';
-  TEST_QR.forEach((row,j)=>row.forEach((on,i)=>{if(on)ctx.fillRect(qrX+i*4,qrY+j*4,4,4);}));
-  const blob = await canvasPngBlob(canvas);
-  return {blob,width:canvas.width,height:canvas.height};
+  TEST_QR.forEach((row,j)=>row.forEach((on,i)=>{if(on)ctx.fillRect(qrX+i*cell,qrY+j*cell,cell,cell);}));
+  const caption='扫码，看看你的内在动物园';ctx.font=sceneFont(14,false);ctx.textBaseline='top';ctx.fillStyle=RESULT_STYLE.ink;
+  ctx.fillText(caption,(scene.width-ctx.measureText(caption).width)/2,scene.height+166);
+  const blob=await canvasPngBlob(canvas);
+  return {blob,width:canvas.width,height:canvas.height,commonHeight:scene.height*scale};
 }
 async function openResultExport(){
   if(exportDialog) return;

@@ -1,4 +1,5 @@
 const fs = require("fs");
+const LAYOUT_JS = fs.readFileSync(require("path").join(__dirname, "result-layout.js"), "utf8");
 const EXPORT_JS = fs.readFileSync(require("path").join(__dirname, "result-export.js"), "utf8");
 const QR = require("./test-qr.json");
 const { CSS } = require("./css.js");
@@ -33,6 +34,7 @@ const MASCOTS = ${mascotsJson};
 const DISCLAIMER = ${disclaimerJson};
 const AVATARS = ${avatarsJson};
 const TEST_QR = ${JSON.stringify(QR)};
+${LAYOUT_JS}
 ${EXPORT_JS}
 
 const state = { idx: 0, answers: new Array(QUESTIONS.length).fill(null), order: [] };
@@ -179,12 +181,13 @@ function renderResults(){
       '<p class="protector-desc">' + selfText + '</p>' +
     '</div></section>';
 
+  let sharedScene = null;
+  try { sharedScene = getResultScene({selfPct,animals}); } catch (_) {}
   app.innerHTML =
     '<main class="result-page' + (main.count > 0 ? '' : ' self-only') + '">' +
-    mainHtml + othersHtml + selfHtml +
+    (sharedScene ? '<div class="sr-only result-accessible">' + mainHtml + othersHtml + selfHtml + '<p>' + DISCLAIMER + '</p><p>V0.5</p></div>' + resultSceneSvg(sharedScene) : '<div class="result-layout-fallback">' + mainHtml + othersHtml + selfHtml + '<p>' + DISCLAIMER + '</p><p>V0.5</p></div>') +
     '<button class="btn result-save" id="saveResultBtn">保存结果图片</button>' +
     '<button class="btn result-restart" id="restartBtn">重新测一次</button>' +
-    '<p class="note">' + DISCLAIMER + '</p><p class="version">V0.5</p>' +
     '</main>';
 
   prepareResultExport(computeResults()).catch(() => {});
@@ -197,6 +200,15 @@ function renderResults(){
   };
 }
 
+let resultResizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resultResizeTimer);
+  resultResizeTimer = setTimeout(() => {
+    if(document.documentElement.getAttribute('data-quiz-view') === 'results' && sharedResultScene && sharedResultScene.width !== resultLayoutWidth()){
+      closeResultExport(); clearResultExportCache(); renderResults();
+    }
+  },120);
+});
 function start(){ renderIntro(); }
 if (window.claude && window.claude.hot) {
   window.claude.hot.ready ? window.claude.hot.ready(start) : start();
